@@ -14,4 +14,4 @@ It includes:
 - latest version of `io.gatling:gatling-maven-plugin` applied
 - sample [Simulation](https://docs.gatling.io/reference/glossary/#simulation) class,
   demonstrating sufficient Gatling functionality
-- proper source file layout
+- proper source files layout
