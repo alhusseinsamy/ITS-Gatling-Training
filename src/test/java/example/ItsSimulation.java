@@ -6,7 +6,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
-public class BasicSimulation extends Simulation {
+public class ItsSimulation extends Simulation {
 
   // Load VU count from system properties
   // Reference: https://docs.gatling.io/guides/passing-parameters/
