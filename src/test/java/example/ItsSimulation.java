@@ -2,6 +2,14 @@ package example;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static example.endpoints.ApiEndpoints.*;
 import static example.endpoints.WebEndpoints.*;
 
@@ -20,6 +28,8 @@ public class ItsSimulation extends Simulation {
       String imageAlt) {
 
   }
+
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   private static final FeederBuilder<Object> usersFeeder = jsonFile("data/users_dev.json").circular();
 
@@ -46,7 +56,27 @@ public class ItsSimulation extends Simulation {
       feed(usersFeeder),
       login,
       homePage,
-      products);
+      products,
+      exec(session -> {
+        try {
+          List<Product> products = mapper.readValue(
+              session.getString("Products"), new TypeReference<List<Product>>() {
+              });
+
+          Random rand = new Random();
+          Product randomProduct = products.get(rand.nextInt(products.size()));
+          List<Product> cartItems = new ArrayList<>();
+          cartItems.add(randomProduct);
+
+          // Serialize updated cart list back to session
+          String cartItemsJsonString = mapper.writeValueAsString(cartItems);
+          return session.set("CartItems", cartItemsJsonString);
+
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }),
+      addToCart);
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
