@@ -2,6 +2,8 @@ package example;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+import static example.endpoints.ApiEndpoints.*;
+import static example.endpoints.WebEndpoints.*;
 
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
@@ -21,7 +23,9 @@ public class ItsSimulation extends Simulation {
 
   // Define scenario
   // Reference: https://docs.gatling.io/reference/script/core/scenario/
-  private static final ScenarioBuilder scenario = scenario("Scenario").exec(http("Session").get("/session"));
+  private static final ScenarioBuilder scenario = scenario("Scenario").exec(
+      homePage,
+      session);
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
