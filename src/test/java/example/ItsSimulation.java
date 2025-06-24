@@ -10,6 +10,17 @@ import io.gatling.javaapi.http.*;
 
 public class ItsSimulation extends Simulation {
 
+  private record Product(
+      int id,
+      String name,
+      String color,
+      String price,
+      int quantity,
+      String imageSrc,
+      String imageAlt) {
+
+  }
+
   private static final FeederBuilder<Object> usersFeeder = jsonFile("data/users_dev.json").circular();
 
   // Load VU count from system properties
