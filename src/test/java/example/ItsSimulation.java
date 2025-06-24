@@ -10,6 +10,8 @@ import io.gatling.javaapi.http.*;
 
 public class ItsSimulation extends Simulation {
 
+  private static final FeederBuilder<Object> usersFeeder = jsonFile("data/users_dev.json").circular();
+
   // Load VU count from system properties
   // Reference: https://docs.gatling.io/guides/passing-parameters/
   private static final int vu = Integer.getInteger("vu", 1);
@@ -28,6 +30,11 @@ public class ItsSimulation extends Simulation {
       session,
       exec(session -> session.set("pageNumber", "0")),
       exec(session -> session.set("searchKey", "")),
+      products,
+      loginPage,
+      feed(usersFeeder),
+      login,
+      homePage,
       products);
 
   // Define assertions

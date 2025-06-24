@@ -9,6 +9,10 @@ public class WebEndpoints {
 
   public static final HttpRequestActionBuilder homePage = http("Homepage")
       .get("https://ecomm.gatling.io/")
-      .check(status().is(200));
+      .check(status().in(200, 304));
+
+  public static final HttpRequestActionBuilder loginPage = http("Login page")
+      .get("https://ecomm.gatling.io/login")
+      .check(status().in(200, 304));
 
 }

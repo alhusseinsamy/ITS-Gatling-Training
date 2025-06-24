@@ -17,4 +17,12 @@ public class ApiEndpoints {
       .queryParam("search", "#{searchKey}")
       .check(status().is(200));
 
+  public static final HttpRequestActionBuilder login = http("Login")
+      .post("/login")
+      .asFormUrlEncoded()
+      .formParam("username", "#{username}")
+      .formParam("password", "#{password}")
+      .check(status().is(200))
+      .check(jmesPath("accessToken").saveAs("AccessToken"));
+
 }
