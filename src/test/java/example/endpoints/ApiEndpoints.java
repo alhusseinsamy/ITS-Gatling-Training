@@ -11,4 +11,10 @@ public class ApiEndpoints {
       .get("/session")
       .check(status().is(200));
 
+  public static final HttpRequestActionBuilder products = http("Get products")
+      .get("/products")
+      .queryParam("page", "#{pageNumber}")
+      .queryParam("search", "#{searchKey}")
+      .check(status().is(200));
+
 }

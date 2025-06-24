@@ -25,7 +25,10 @@ public class ItsSimulation extends Simulation {
   // Reference: https://docs.gatling.io/reference/script/core/scenario/
   private static final ScenarioBuilder scenario = scenario("Scenario").exec(
       homePage,
-      session);
+      session,
+      exec(session -> session.set("pageNumber", "0")),
+      exec(session -> session.set("searchKey", "")),
+      products);
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
