@@ -76,7 +76,8 @@ public class ItsSimulation extends Simulation {
           throw new RuntimeException(e);
         }
       }),
-      addToCart);
+      addToCart,
+      checkout);
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
