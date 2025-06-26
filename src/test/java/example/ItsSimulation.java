@@ -12,26 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static example.endpoints.ApiEndpoints.*;
 import static example.endpoints.WebEndpoints.*;
+import static example.actions.Actions.*;
+import static example.groups.ScenarioGroups.*;
 
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
 public class ItsSimulation extends Simulation {
-
-  private record Product(
-      int id,
-      String name,
-      String color,
-      String price,
-      int quantity,
-      String imageSrc,
-      String imageAlt) {
-
-  }
-
-  private static final ObjectMapper mapper = new ObjectMapper();
-
-  private static final FeederBuilder<Object> usersFeeder = jsonFile("data/users_dev.json").circular();
 
   // Load VU count from system properties
   // Reference: https://docs.gatling.io/guides/passing-parameters/
@@ -47,37 +34,13 @@ public class ItsSimulation extends Simulation {
   // Define scenario
   // Reference: https://docs.gatling.io/reference/script/core/scenario/
   private static final ScenarioBuilder scenario = scenario("Scenario").exec(
-      homePage,
-      session,
-      exec(session -> session.set("pageNumber", "0")),
-      exec(session -> session.set("searchKey", "")),
-      products,
-      loginPage,
-      feed(usersFeeder),
-      login,
-      homePage,
-      products,
-      exec(session -> {
-        try {
-          List<Product> products = mapper.readValue(
-              session.getString("Products"), new TypeReference<List<Product>>() {
-              });
-
-          Random rand = new Random();
-          Product randomProduct = products.get(rand.nextInt(products.size()));
-          List<Product> cartItems = new ArrayList<>();
-          cartItems.add(randomProduct);
-
-          // Serialize updated cart list back to session
-          String cartItemsJsonString = mapper.writeValueAsString(cartItems);
-          return session.set("CartItems", cartItemsJsonString);
-
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      }),
-      addToCart,
-      checkout);
+      homePageAnonymousGroup,
+      // pause(5, 15),
+      loginGroup,
+      homePageAuthenticatedGroup,
+      browseAndAddToCartGroup,
+      // pause(5, 15),
+      checkoutGroup);
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
