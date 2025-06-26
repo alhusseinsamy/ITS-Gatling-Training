@@ -38,6 +38,7 @@ public class ApiEndpoints {
             .header("Authorization", "#{AccessToken}")
             .asJson()
             .body(ElFileBody("bodies/cart.json"))
-            .check(status().is(200));
+            .check(status().is(200))
+            .check(substring("Checkout completed"));
 
 }
