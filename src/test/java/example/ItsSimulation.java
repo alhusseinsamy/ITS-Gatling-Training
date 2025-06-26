@@ -28,6 +28,10 @@ public class ItsSimulation extends Simulation {
 
   private static final int maxPause = Integer.getInteger("maxPause", 15);
 
+  private static final String testType = System.getProperty("testType", "smoke");
+
+  private static final int duration = Integer.getInteger("duration", 10);
+
   // Define HTTP configuration
   // Reference: https://docs.gatling.io/reference/script/protocols/http/protocol/
   private static final HttpProtocolBuilder httpProtocol = http.baseUrl("https://api-ecomm.gatling.io")
@@ -52,9 +56,17 @@ public class ItsSimulation extends Simulation {
       global().responseTime().percentile(90.0).lt(500),
       global().failedRequests().percent().lt(5.0));
 
+  static final PopulationBuilder injectionProfile(ScenarioBuilder scn) {
+    return switch (testType) {
+      case "smoke" -> scn.injectOpen(atOnceUsers(1));
+      case "stress" -> scn.injectOpen(stressPeakUsers(vu).during(duration));
+      default -> scn.injectOpen(atOnceUsers(vu));
+    };
+  }
+
   // Define injection profile and execute the test
   // Reference: https://docs.gatling.io/reference/script/core/injection/
   {
-    setUp(scenario.injectOpen(atOnceUsers(vu))).assertions(assertions).protocols(httpProtocol);
+    setUp(injectionProfile(scenario)).assertions(assertions).protocols(httpProtocol);
   }
 }
