@@ -24,6 +24,10 @@ public class ItsSimulation extends Simulation {
   // Reference: https://docs.gatling.io/guides/passing-parameters/
   private static final int vu = Integer.getInteger("vu", 1);
 
+  private static final int minPause = Integer.getInteger("minPause", 5);
+
+  private static final int maxPause = Integer.getInteger("maxPause", 15);
+
   // Define HTTP configuration
   // Reference: https://docs.gatling.io/reference/script/protocols/http/protocol/
   private static final HttpProtocolBuilder httpProtocol = http.baseUrl("https://api-ecomm.gatling.io")
@@ -35,7 +39,7 @@ public class ItsSimulation extends Simulation {
   // Reference: https://docs.gatling.io/reference/script/core/scenario/
   private static final ScenarioBuilder scenario = scenario("Scenario").exec(
       homePageAnonymousGroup,
-      // pause(5, 15),
+      // pause(minPause, maxPause),
       loginGroup,
       homePageAuthenticatedGroup,
       browseAndAddToCartGroup,
@@ -44,11 +48,13 @@ public class ItsSimulation extends Simulation {
 
   // Define assertions
   // Reference: https://docs.gatling.io/reference/script/core/assertions/
-  private static final Assertion assertion = global().failedRequests().count().lt(1L);
+  static final List<Assertion> assertions = List.of(
+      global().responseTime().percentile(90.0).lt(500),
+      global().failedRequests().percent().lt(5.0));
 
   // Define injection profile and execute the test
   // Reference: https://docs.gatling.io/reference/script/core/injection/
   {
-    setUp(scenario.injectOpen(atOnceUsers(vu))).assertions(assertion).protocols(httpProtocol);
+    setUp(scenario.injectOpen(atOnceUsers(vu))).assertions(assertions).protocols(httpProtocol);
   }
 }
