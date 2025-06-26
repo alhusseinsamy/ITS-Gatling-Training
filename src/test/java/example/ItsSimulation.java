@@ -46,7 +46,10 @@ public class ItsSimulation extends Simulation {
       // pause(minPause, maxPause),
       loginGroup,
       homePageAuthenticatedGroup,
-      browseAndAddToCartGroup,
+      initiateCartItems,
+      removePageNumber,
+      repeat(4, "pageNumber").on(
+          browseAndAddToCartGroup),
       // pause(5, 15),
       checkoutGroup);
 

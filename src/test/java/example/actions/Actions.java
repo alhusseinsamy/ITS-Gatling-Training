@@ -30,6 +30,8 @@ public class Actions {
 
   public static final ChainBuilder setPageNumber = exec(session -> session.set("pageNumber", "0"));
 
+  public static final ChainBuilder removePageNumber = exec(session -> session.remove("pageNumber"));
+
   public static final ChainBuilder setSearchKey = exec(session -> session.set("searchKey", ""));
 
   public static final ChainBuilder createAddToCartBody = exec(session -> {
@@ -38,9 +40,12 @@ public class Actions {
           session.getString("Products"), new TypeReference<List<Product>>() {
           });
 
+      List<Product> cartItems = mapper.readValue(
+          session.getString("CartItems"), new TypeReference<List<Product>>() {
+          });
+
       Random rand = new Random();
       Product randomProduct = products.get(rand.nextInt(products.size()));
-      List<Product> cartItems = new ArrayList<>();
       cartItems.add(randomProduct);
 
       // Serialize updated cart list back to session
@@ -51,5 +56,7 @@ public class Actions {
       throw new RuntimeException(e);
     }
   });
+
+  public static final ChainBuilder initiateCartItems = exec(session -> session.set("CartItems", "[]"));
 
 }
