@@ -64,9 +64,17 @@ public class ItsSimulation extends Simulation {
     };
   }
 
+  static final List<Assertion> getAssertions() {
+    return switch (testType) {
+      case "stress" -> assertions;
+      case "smoke" -> List.of(global().failedRequests().count().lt(1L));
+      default -> assertions;
+    };
+  }
+
   // Define injection profile and execute the test
   // Reference: https://docs.gatling.io/reference/script/core/injection/
   {
-    setUp(injectionProfile(scenario)).assertions(assertions).protocols(httpProtocol);
+    setUp(injectionProfile(scenario)).assertions(getAssertions()).protocols(httpProtocol);
   }
 }
